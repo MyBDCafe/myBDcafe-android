@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.wiz.mybdcafe.R
 import com.wiz.mybdcafe.ui.theme.NanumNeo
 
@@ -30,9 +31,10 @@ fun AppBarHome() {
                     .fillMaxHeight()
                     .wrapContentHeight(align = Alignment.CenterVertically),
                 color = colorResource(id = R.color.red_0),
+                fontSize = 15.sp,
                 fontFamily = NanumNeo,
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center
+                fontWeight = FontWeight.ExtraBold,
+                textAlign = TextAlign.Center,
             )
         },
         modifier = Modifier
