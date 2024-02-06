@@ -52,12 +52,13 @@ fun Filter(
             ),
             contentPadding = PaddingValues(0.dp)
         ) {
+            //장르 텍스트
             Text(
                 text = groupTitle,
                 color = Color.Black,
                 fontSize = 24.sp,
                 fontFamily = NanumNeo,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Black,
             )
 
             Spacer(modifier = Modifier.width(4.dp))
@@ -81,7 +82,7 @@ fun Filter(
 
 @Preview
 @Composable
-private fun FilterPreview(){
+private fun FilterPreview() {
     Filter(
         groupTitle = "PLAVE"
     )
