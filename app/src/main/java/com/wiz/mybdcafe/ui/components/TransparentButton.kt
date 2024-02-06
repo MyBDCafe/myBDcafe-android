@@ -19,16 +19,18 @@ import com.wiz.mybdcafe.R
 @Composable
 fun TransparentButton(
     onClick: () -> Unit,
-    height: Int = 24,
-    width: Int = 24,
+    buttonHeight: Int = 48,
+    buttonWidth: Int = 48,
     iconResource: Painter,
-    iconColor: Color = Color.Black
+    iconColor: Color = Color.Black,
+    iconHeight: Int = 24,
+    iconWidth: Int = 24
 ) {
     Button(
         onClick = onClick,
         modifier = Modifier
-            .height(height.dp)
-            .width(width.dp),
+            .height(buttonHeight.dp)
+            .width(buttonWidth.dp),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
@@ -38,6 +40,9 @@ fun TransparentButton(
         Icon(
             painter = iconResource,
             contentDescription = null,
+            modifier = Modifier
+                .height(iconHeight.dp)
+                .width(iconWidth.dp),
             tint = iconColor
         )
     }
