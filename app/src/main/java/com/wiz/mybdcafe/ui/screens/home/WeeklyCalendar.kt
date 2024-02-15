@@ -2,12 +2,14 @@ package com.wiz.mybdcafe.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -53,10 +55,15 @@ fun WeeklyCalendar(
             .wrapContentHeight()
             .background(
                 color = colorResource(id = R.color.gray_100),
+                shape = RoundedCornerShape(
+                    bottomStart = 10.dp,
+                    bottomEnd = 10.dp
+                )
             )
             .padding(
-                vertical = 4.dp,
-                horizontal = 2.dp
+                top = 4.dp,
+                start = 2.dp,
+                end = 2.dp
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -95,6 +102,9 @@ fun WeeklyCalendar(
                 )
             }
         }
+
+        //핸들
+        WeeklyCalendarPanelHandle()
     }
 }
 
@@ -155,6 +165,33 @@ fun WeeklyCalendarDay(
     }
 }
 
+@Composable
+fun WeeklyCalendarPanelHandle() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(20.dp)
+            .background(
+                color = colorResource(id = R.color.gray_100),
+                shape = RoundedCornerShape(
+                    bottomStart = 10.dp,
+                    bottomEnd = 10.dp
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+                .width(32.dp)
+                .background(
+                    color = colorResource(id = R.color.gray_400),
+                    shape = RoundedCornerShape(50)
+                )
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun WeeklyCalendarPreview() {
@@ -171,4 +208,10 @@ private fun WeeklyCalendarDayPreview() {
         dayTitle = "MON",
         dayNum = "01"
     )
+}
+
+@Preview
+@Composable
+private fun WeeklyCalendarPanelHandlePreview() {
+    WeeklyCalendarPanelHandle()
 }
