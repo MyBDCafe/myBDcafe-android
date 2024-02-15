@@ -1,7 +1,5 @@
 package com.wiz.mybdcafe.ui.screens.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +27,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeeklyCalendar(
     modifier: Modifier = Modifier,
@@ -158,7 +155,6 @@ fun WeeklyCalendarDay(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun WeeklyCalendarPreview() {
