@@ -1,4 +1,5 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -21,11 +22,15 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        val naverMapAPIKey: String = gradleLocalProperties(rootDir).getProperty("naver_map_client_ID")
-        manifestPlaceholders["naverMapAPIKey"] = naverMapAPIKey
 
         //네이버 지도 api key
-        buildConfigField("String", "naver_map_api_key", "\"${naverMapAPIKey}\"")
+        val properties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(FileInputStream(localPropertiesFile))
+            val naverMapApiKey = properties.getProperty("naver_map_client_ID")
+            manifestPlaceholders["naverMapAPIKey"] = naverMapApiKey
+        }
     }
 
     buildTypes {
@@ -79,10 +84,10 @@ dependencies {
     //네이버 지도 SDK
     implementation("com.naver.maps:map-sdk:3.17.0")
     //네이버 지도 compose
-    implementation ("io.github.fornewid:naver-map-compose:1.6.0")
+    implementation("io.github.fornewid:naver-map-compose:1.6.0")
     //네이버 지도 위치 추적
-    implementation ("io.github.fornewid:naver-map-location:21.0.1")
+    implementation("io.github.fornewid:naver-map-location:21.0.1")
 
     //위치 추적
-    implementation ("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 }
