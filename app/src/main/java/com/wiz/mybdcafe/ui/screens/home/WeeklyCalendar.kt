@@ -1,6 +1,10 @@
 package com.wiz.mybdcafe.ui.screens.home
 
+import android.util.Log
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,13 +18,20 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wiz.mybdcafe.R
@@ -28,6 +39,10 @@ import com.wiz.mybdcafe.ui.theme.NanumNeo
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+enum class CalendarState {
+    COLLAPSED, DEFAULT, EXPANDED
+}
 
 @Composable
 fun WeeklyCalendar(
@@ -49,9 +64,33 @@ fun WeeklyCalendar(
         )
     }
 
+    var calendarState by remember { mutableStateOf(CalendarState.DEFAULT) }
+
+    var initialHeight = remember { mutableStateOf<Dp?>(null) }
+    val targetHeight = remember { mutableStateOf(148.dp) }
+    val animatedHeight by animateDpAsState(targetValue = targetHeight.value, label = "")
+
+    val toggleCalendarState: () -> Unit = {
+        calendarState = when (calendarState) {
+            CalendarState.COLLAPSED -> CalendarState.DEFAULT
+            CalendarState.DEFAULT -> CalendarState.COLLAPSED
+            CalendarState.EXPANDED -> CalendarState.DEFAULT
+        }
+
+        targetHeight.value = when (calendarState) {
+            CalendarState.COLLAPSED -> 20.dp
+            CalendarState.DEFAULT -> initialHeight.value ?: 148.dp
+            CalendarState.EXPANDED -> 400.dp
+        }
+    }
+
+    val density = LocalDensity.current
+
+
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .animateContentSize()
             .wrapContentHeight()
             .background(
                 color = colorResource(id = R.color.gray_100),
@@ -64,15 +103,28 @@ fun WeeklyCalendar(
                 top = 4.dp,
                 start = 2.dp,
                 end = 2.dp
-            ),
+            )
+            .onGloballyPositioned {
+                val height = with(density) { it.size.height.toDp() }
+                Log.d("initialHeight", height.toString())
+
+                initialHeight.value = height
+                targetHeight.value = height
+
+
+                Log.d("targetHeight", targetHeight.toString())
+                Log.d("animatedHeight", animatedHeight.value.toString())
+            }
+//            .then(
+//                Modifier.height(targetHeight)
+//            )
+        ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //연월주차 텍스트
         Text(
             text = formattedToday,
-            modifier = Modifier
-            //    .fillMaxWidth()
-            ,
+            modifier = Modifier,
             color = colorResource(id = R.color.gray_600),
             fontSize = 16.sp,
             fontWeight = FontWeight.ExtraBold,
@@ -104,7 +156,7 @@ fun WeeklyCalendar(
         }
 
         //핸들
-        WeeklyCalendarPanelHandle()
+        WeeklyCalendarPanelHandle(toggleCalendarState)
     }
 }
 
@@ -166,7 +218,9 @@ fun WeeklyCalendarDay(
 }
 
 @Composable
-fun WeeklyCalendarPanelHandle() {
+fun WeeklyCalendarPanelHandle(
+    toggleState: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -177,7 +231,8 @@ fun WeeklyCalendarPanelHandle() {
                     bottomStart = 10.dp,
                     bottomEnd = 10.dp
                 )
-            ),
+            )
+            .clickable(onClick = toggleState),
         contentAlignment = Alignment.Center
     ) {
         Spacer(
@@ -213,5 +268,5 @@ private fun WeeklyCalendarDayPreview() {
 @Preview
 @Composable
 private fun WeeklyCalendarPanelHandlePreview() {
-    WeeklyCalendarPanelHandle()
+    WeeklyCalendarPanelHandle({})
 }
