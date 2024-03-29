@@ -1,6 +1,5 @@
 package com.wiz.mybdcafe.ui.screens.home
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -64,10 +63,14 @@ fun WeeklyCalendar(
         )
     }
 
+    /*
+    * TODO: 기획대로 3단계 상태 구현하기
+    */
+
     var calendarState by remember { mutableStateOf(CalendarState.DEFAULT) }
 
-    var initialHeight = remember { mutableStateOf<Dp?>(null) }
-    val targetHeight = remember { mutableStateOf(148.dp) }
+    val initialHeight = remember { mutableStateOf<Dp?>(null) }
+    val targetHeight = remember { mutableStateOf(130.dp) }
     val animatedHeight by animateDpAsState(targetValue = targetHeight.value, label = "")
 
     val toggleCalendarState: () -> Unit = {
@@ -78,7 +81,7 @@ fun WeeklyCalendar(
         }
 
         targetHeight.value = when (calendarState) {
-            CalendarState.COLLAPSED -> 20.dp
+            CalendarState.COLLAPSED -> 0.dp
             CalendarState.DEFAULT -> initialHeight.value ?: 148.dp
             CalendarState.EXPANDED -> 400.dp
         }
@@ -90,7 +93,6 @@ fun WeeklyCalendar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .animateContentSize()
             .wrapContentHeight()
             .background(
                 color = colorResource(id = R.color.gray_100),
@@ -98,60 +100,65 @@ fun WeeklyCalendar(
                     bottomStart = 10.dp,
                     bottomEnd = 10.dp
                 )
-            )
-            .padding(
-                top = 4.dp,
-                start = 2.dp,
-                end = 2.dp
-            )
-            .onGloballyPositioned {
-                val height = with(density) { it.size.height.toDp() }
-                Log.d("initialHeight", height.toString())
-
-                initialHeight.value = height
-                targetHeight.value = height
-
-
-                Log.d("targetHeight", targetHeight.toString())
-                Log.d("animatedHeight", animatedHeight.value.toString())
-            }
-//            .then(
-//                Modifier.height(targetHeight)
-//            )
-        ,
-        horizontalAlignment = Alignment.CenterHorizontally
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        //연월주차 텍스트
-        Text(
-            text = formattedToday,
-            modifier = Modifier,
-            color = colorResource(id = R.color.gray_600),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = NanumNeo,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(
+        //핸들 제외한 내용물
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-        )
-
-        //일주일 날짜 칸들
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            horizontalArrangement = Arrangement.spacedBy(1.dp)
-        ) {
-            weekDays.forEach { day ->
-                WeeklyCalendarDay(
-                    modifier = Modifier
-                        .weight(1f),
-                    dayTitle = day.first,
-                    dayNum = day.second
+                .animateContentSize()
+                .padding(
+                    top = 4.dp,
+                    start = 2.dp,
+                    end = 2.dp,
                 )
+                .clickable { }
+                .onGloballyPositioned {
+                    if (initialHeight.value == null) {
+                        val height = with(density) { it.size.height.toDp() }
+
+                        initialHeight.value = height
+                        targetHeight.value = height
+                    }
+                }
+                .then(
+                    Modifier.height(animatedHeight)
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            //연월주차 텍스트
+            Text(
+                text = formattedToday,
+                modifier = Modifier,
+                color = colorResource(id = R.color.gray_600),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+                fontFamily = NanumNeo,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+            )
+
+            //일주일 날짜 칸들
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                horizontalArrangement = Arrangement.spacedBy(1.dp)
+            ) {
+                weekDays.forEach { day ->
+                    WeeklyCalendarDay(
+                        modifier = Modifier
+                            .weight(1f),
+                        dayTitle = day.first,
+                        dayNum = day.second
+                    )
+                }
             }
         }
 
