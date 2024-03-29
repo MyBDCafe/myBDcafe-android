@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,8 +42,10 @@ fun AppBarHome() {
         },
         modifier = Modifier
             .height(52.dp)
-            .fillMaxWidth()
-            .background(Color.White),
+            .fillMaxWidth(),
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color.White
+        )
     )
 }
 
