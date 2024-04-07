@@ -90,4 +90,7 @@ dependencies {
 
     //위치 추적
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    //constraintLayout
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 }
