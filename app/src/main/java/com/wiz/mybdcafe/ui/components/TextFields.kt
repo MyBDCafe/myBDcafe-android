@@ -48,7 +48,6 @@ fun TextField(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-        //.border(width = 1.dp, color = Color.Green)
     ) {
         val (textField, errorMessage, headingIconRef) = createRefs()
 
@@ -69,7 +68,6 @@ fun TextField(
         Box(modifier = Modifier
             .constrainAs(textField) {
                 top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
                 if (headingIcon != null) { // headingIcon이 존재할 경우
                     start.linkTo(headingIconRef.end, margin = 8.dp)
                 } else { // headingIcon이 존재하지 않을 경우
@@ -265,12 +263,6 @@ private fun TextFieldDefaultPreview() {
         inputText = "",
         onTextChange = {},
         labelText = "행사 이름",
-        headingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_candlestick_chart),
-                contentDescription = null
-            )
-        },
         trailingIconButton = painterResource(id = R.drawable.ic_add),
     )
 }
