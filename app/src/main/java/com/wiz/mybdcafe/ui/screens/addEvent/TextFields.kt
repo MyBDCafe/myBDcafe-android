@@ -1,4 +1,4 @@
-package com.wiz.mybdcafe.ui.components
+package com.wiz.mybdcafe.ui.screens.addEvent
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
