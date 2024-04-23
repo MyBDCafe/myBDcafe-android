@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,18 +29,18 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.wiz.mybdcafe.R
+import com.wiz.mybdcafe.ui.components.TransparentButton
 import com.wiz.mybdcafe.ui.theme.NanumNeo
 
 @Composable
 fun TextField(
     modifier: Modifier = Modifier,
+    isNecessary: Boolean = false,
     inputText: String,
     onTextChange: (String) -> Unit,
     labelText: String,
-    isError: Boolean = false,
     headingIcon: (@Composable () -> Unit)? = null,
-    trailingIconButton: Painter? = null,
-    onTrailingButtonClick: (() -> Unit)? = null,
+    trailingIconButton: (@Composable () -> Unit)? = null,
     iconDivider: Boolean = false
 ) {
     ConstraintLayout(
@@ -56,8 +55,8 @@ fun TextField(
             Box(modifier = Modifier
                 .constrainAs(headingIconRef) {
                     start.linkTo(parent.start)
-                    end.linkTo(textField.start) // B와의 간격을 추가
-                    centerVerticallyTo(textField) // B와 수직 중앙 정렬
+                    end.linkTo(textField.start)
+                    centerVerticallyTo(textField) // 텍스트필드와 수직 중앙 정렬
                 }
             ) {
                 it()
@@ -77,52 +76,58 @@ fun TextField(
                 width = Dimension.fillToConstraints
             }
         ) {
-            TextFieldUI(
+            TextFieldBackgroundBox(
                 modifier = Modifier,
-                inputText = inputText,
-                onTextChange = onTextChange,
-                labelText = labelText,
-                isError = isError,
+                isNecessary = isNecessary,
+                isInput = inputText.isNotBlank(),
+                hintText = if (inputText.isBlank()) labelText else "",
                 trailingIconButton = trailingIconButton,
-                onTrailingButtonClick = onTrailingButtonClick,
-                iconDivider = iconDivider
+                iconDivider = iconDivider,
+                content = {
+                    BasicTextField(
+                        value = inputText,
+                        onValueChange = onTextChange,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth(),
+                        singleLine = true,
+                    )
+                }
             )
         }
 
         //에러 메시지
         Box(modifier = Modifier
             .constrainAs(errorMessage) {
-                bottom.linkTo(textField.top, margin = 4.dp)
+                bottom.linkTo(textField.top, margin = 4.dp) //헤딩 아이콘 사이 간격
                 start.linkTo(textField.start)
             }
         ) {
             TextFieldErrorMessage(
                 labelText = labelText,
-                isError = isError
+                isError = isNecessary && inputText.isBlank()
             )
         }
     }
 }
 
 @Composable
-fun TextFieldUI(
+fun TextFieldBackgroundBox(
     modifier: Modifier = Modifier,
-    inputText: String,
-    onTextChange: (String) -> Unit,
-    labelText: String,
-    isError: Boolean,
-    trailingIconButton: Painter?,
-    onTrailingButtonClick: (() -> Unit)?,
-    iconDivider: Boolean
+    isNecessary: Boolean = false,
+    isInput: Boolean = false,
+    hintText: String? = null,
+    trailingIconButton: (@Composable () -> Unit)? = null,
+    iconDivider: Boolean = false,
+    content: (@Composable () -> Unit)? = null
 ) {
-    //배경 UI
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(40.dp)
             .border(
-                width = if (isError) 2.dp else 1.dp,
-                color = if (isError) colorResource(id = R.color.red_0)
+                width = if (isNecessary && !isInput) 2.dp else 1.dp,
+                color = if (isNecessary && !isInput) colorResource(id = R.color.red_0)
                 else colorResource(id = R.color.gray_400),
                 shape = RoundedCornerShape(3.dp)
             )
@@ -134,38 +139,29 @@ fun TextFieldUI(
         verticalAlignment = Alignment.CenterVertically
     ) {
         //텍스트 가운데 정렬용 Row
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
+            contentAlignment = Alignment.CenterStart
         ) {
-            BasicTextField(
-                value = inputText,
-                onValueChange = onTextChange,
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .weight(1f),
-                singleLine = true,
-                decorationBox = { innerTextField ->
-                    if (inputText.isEmpty()) {
-                        //텍스트 왼쪽 정렬용 column
-                        Column {
-                            //힌트 텍스트
-                            Text(
-                                text = labelText,
-                                modifier = Modifier
-                                    .wrapContentSize(),
-                                color = colorResource(id = R.color.gray_400),
-                                fontSize = 16.sp,
-                                fontFamily = NanumNeo,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                    innerTextField()
-                }
-            )
+            if (!hintText.isNullOrBlank()) {
+                Text(
+                    text = hintText,
+                    modifier = Modifier
+                        .wrapContentSize(),
+                    color = colorResource(id = R.color.gray_400),
+                    fontSize = 16.sp,
+                    fontFamily = NanumNeo,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            //박스에 들어갈 요소
+            //ex) Text, TextField...
+            if (content != null) {
+                content()
+            }
         }
 
         //트레일링 아이콘
@@ -185,19 +181,12 @@ fun TextFieldUI(
                         modifier = Modifier
                             .fillMaxHeight()
                             .width(1.dp),
-                        color = if (isError) colorResource(id = R.color.red_0)
+                        color = if (isNecessary && !isInput) colorResource(id = R.color.red_0)
                         else colorResource(id = R.color.gray_400)
                     )
                 }
 
-                TransparentButton(
-                    onClick = onTrailingButtonClick ?: {},
-                    buttonHeight = 24,
-                    buttonWidth = 24,
-                    iconResource = trailingIconButton,
-                    iconColor = if (isError) colorResource(id = R.color.red_0)
-                    else colorResource(id = R.color.gray_400)
-                )
+                trailingIconButton()
             }
         }
     }
@@ -229,40 +218,67 @@ fun TextFieldErrorMessage(
     )
 }
 
-@Preview(
-    showBackground = true,
-    heightDp = 240,
-    widthDp = 600
-)
+@Preview
 @Composable
-private fun TextFieldErrorPreview() {
-    TextField(
-        inputText = "",
-        onTextChange = {},
-        isError = true,
-        labelText = "행사 이름",
-        headingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_candlestick_chart),
-                contentDescription = null
-            )
-        },
-        trailingIconButton = painterResource(id = R.drawable.ic_add),
-        iconDivider = true
-    )
+private fun TextFieldBackgroundBoxPreview() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        TextFieldBackgroundBox(
+            hintText = "테스트"
+        )
+
+        TextFieldBackgroundBox(
+            hintText = "테스트",
+            trailingIconButton = {
+                TransparentButton(
+                    onClick = { /*TODO*/ },
+                    iconResource = painterResource(id = R.drawable.ic_add),
+                    buttonWidth = 24,
+                    buttonHeight = 24,
+                    iconHeight = 18,
+                    iconWidth = 18
+                )
+            },
+            iconDivider = true
+        )
+    }
 }
 
-@Preview(
-    showBackground = true,
-    heightDp = 240,
-    widthDp = 480
-)
+@Preview
 @Composable
-private fun TextFieldDefaultPreview() {
-    TextField(
-        inputText = "",
-        onTextChange = {},
-        labelText = "행사 이름",
-        trailingIconButton = painterResource(id = R.drawable.ic_add),
-    )
+private fun TextFieldPreview() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        TextField(
+            inputText = "",
+            onTextChange = {},
+            labelText = "테스트"
+        )
+
+        TextField(
+            isNecessary = true,
+            inputText = "",
+            onTextChange = {},
+            labelText = "테스트",
+            headingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_candlestick_chart),
+                    contentDescription = null
+                )
+            },
+            trailingIconButton = {
+                TransparentButton(
+                    onClick = { /*TODO*/ },
+                    iconResource = painterResource(id = R.drawable.ic_add),
+                    buttonWidth = 24,
+                    buttonHeight = 24,
+                    iconHeight = 18,
+                    iconWidth = 18
+                )
+            },
+            iconDivider = true
+        )
+    }
 }
