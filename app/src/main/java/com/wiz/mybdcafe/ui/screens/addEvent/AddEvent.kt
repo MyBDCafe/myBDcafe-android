@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wiz.mybdcafe.R
 import com.wiz.mybdcafe.ui.components.ButtonBottomBar
-import com.wiz.mybdcafe.ui.components.TextField
+import com.wiz.mybdcafe.ui.components.TransparentButton
 import com.wiz.mybdcafe.ui.theme.NanumNeo
 
 @Composable
@@ -70,7 +70,7 @@ fun AddEvent() {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(24.dp)
+                    .height(40.dp)
             )
 
             //정보 입력 칸들
@@ -80,7 +80,6 @@ fun AddEvent() {
                     .padding(
                         horizontal = 24.dp
                     ),
-                //verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 //행사 이름
                 var eventName by rememberSaveable { mutableStateOf("") }
@@ -88,96 +87,140 @@ fun AddEvent() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(),
+                    isNecessary = true,
                     inputText = eventName,
                     onTextChange = { eventName = it },
                     labelText = "행사 이름",
-                    isError = eventName.isEmpty(),
-                    trailingIconButton = painterResource(id = R.drawable.ic_circle_filled),
-                    onTrailingButtonClick = { /*TODO*/ },
+                    trailingIconButton = {
+                        TransparentButton(
+                            onClick = { /*TODO*/ },
+                            iconResource = painterResource(id = R.drawable.ic_add),
+                            buttonWidth = 24,
+                            buttonHeight = 24,
+                            iconHeight = 18,
+                            iconWidth = 18
+                        )
+                    },
                     iconDivider = true
                 )
 
-                //장소
-                TextField(
+                Spacer(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    inputText = "",
-                    onTextChange = { },
-                    labelText = "장소",
-                    headingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_place),
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.red_0)
-                        )
-                    },
-                    trailingIconButton = painterResource(id = R.drawable.ic_map),
-                    onTrailingButtonClick = { /*TODO*/ },
+                        .fillMaxWidth()
+                        .height(36.dp)
                 )
 
-                //날짜 및 시간
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    inputText = "",
-                    onTextChange = { },
-                    labelText = "날짜 및 시간",
-                    headingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_clock),
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.red_0)
-                        )
-                    },
-                )
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    //분류 드롭다운 메뉴
+                    CategoryDropdownMenu(
+                        hintText = "분류"
+                    )
 
-                //태그
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    inputText = "",
-                    onTextChange = { },
-                    labelText = "태그",
-                    headingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_tag),
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.red_0)
-                        )
-                    },
-                )
+                    //장소
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        inputText = "",
+                        onTextChange = { },
+                        labelText = "장소",
+                        headingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_place),
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.red_0)
+                            )
+                        },
+                        trailingIconButton = {
+                            TransparentButton(
+                                onClick = { /*TODO*/ },
+                                iconResource = painterResource(id = R.drawable.ic_map),
+                                iconColor = colorResource(id = R.color.gray_400),
+                                buttonWidth = 24,
+                                buttonHeight = 24,
+                                iconHeight = 18,
+                                iconWidth = 18
+                            )
+                        },
+                    )
 
-                //링크
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    inputText = "",
-                    onTextChange = { },
-                    labelText = "링크",
-                    headingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_link),
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.red_0)
-                        )
-                    },
-                )
+                    //날짜 및 시간
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        inputText = "",
+                        onTextChange = { },
+                        labelText = "날짜 및 시간",
+                        headingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_clock),
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.red_0)
+                            )
+                        },
+                        trailingIconButton = {
+                            TransparentButton(
+                                onClick = { /*TODO*/ },
+                                iconResource = painterResource(id = R.drawable.ic_add),
+                                buttonWidth = 24,
+                                buttonHeight = 24,
+                                iconHeight = 18,
+                                iconWidth = 18
+                            )
+                        },
+                        iconDivider = true
+                    )
 
-                //메모
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    inputText = "",
-                    onTextChange = { },
-                    labelText = "메모",
-                    headingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_article),
-                            contentDescription = null,
-                            tint = colorResource(id = R.color.red_0)
-                        )
-                    },
-                )
+                    //태그
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        inputText = "",
+                        onTextChange = { },
+                        labelText = "태그",
+                        headingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_tag),
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.red_0)
+                            )
+                        },
+                    )
+
+                    //링크
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        inputText = "",
+                        onTextChange = { },
+                        labelText = "링크",
+                        headingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_link),
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.red_0)
+                            )
+                        },
+                    )
+
+                    //메모
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        inputText = "",
+                        onTextChange = { },
+                        labelText = "메모",
+                        headingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_article),
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.red_0)
+                            )
+                        },
+                    )
+                }
             }
         }
     }
