@@ -94,7 +94,7 @@ fun AddEvent() {
                     trailingIconButton = {
                         TransparentButton(
                             onClick = { /*TODO*/ },
-                            iconResource = painterResource(id = R.drawable.ic_add),
+                            iconResource = painterResource(id = R.drawable.ic_circle_filled),
                             buttonWidth = 24,
                             buttonHeight = 24,
                             iconHeight = 18,
@@ -115,8 +115,15 @@ fun AddEvent() {
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     //분류 드롭다운 메뉴
-                    CategoryDropdownMenu(
-                        hintText = "분류"
+                    DropdownMenu(
+                        hintText = "분류",
+                        headingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_filter_alt),
+                                contentDescription = null,
+                                tint = colorResource(id = R.color.red_0)
+                            )
+                        }
                     )
 
                     //장소
