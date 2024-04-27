@@ -1,5 +1,7 @@
 package com.wiz.mybdcafe.ui.screens.addEvent
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +33,15 @@ import com.wiz.mybdcafe.ui.theme.NanumNeo
 
 @Composable
 fun AddEvent() {
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
+        modifier = Modifier
+            .clickable(
+                onClick = { focusManager.clearFocus() },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ),
         topBar = { AppBarAddEvent() },
         bottomBar = {
             ButtonBottomBar(
@@ -101,7 +113,8 @@ fun AddEvent() {
                             iconWidth = 18
                         )
                     },
-                    iconDivider = true
+                    iconDivider = true,
+                    focusManager = focusManager
                 )
 
                 Spacer(
@@ -151,6 +164,7 @@ fun AddEvent() {
                                 iconWidth = 18
                             )
                         },
+                        focusManager = focusManager
                     )
 
                     //날짜 및 시간
@@ -177,7 +191,8 @@ fun AddEvent() {
                                 iconWidth = 18
                             )
                         },
-                        iconDivider = true
+                        iconDivider = true,
+                        focusManager = focusManager
                     )
 
                     //태그
@@ -194,6 +209,7 @@ fun AddEvent() {
                                 tint = colorResource(id = R.color.red_0)
                             )
                         },
+                        focusManager = focusManager
                     )
 
                     //링크
@@ -210,6 +226,7 @@ fun AddEvent() {
                                 tint = colorResource(id = R.color.red_0)
                             )
                         },
+                        focusManager = focusManager
                     )
 
                     //메모
@@ -226,6 +243,7 @@ fun AddEvent() {
                                 tint = colorResource(id = R.color.red_0)
                             )
                         },
+                        focusManager = focusManager
                     )
                 }
             }
