@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,21 +20,88 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.wiz.mybdcafe.R
 import com.wiz.mybdcafe.ui.theme.NanumNeo
+
+@Composable
+fun DropdownMenu(
+    modifier: Modifier = Modifier,
+    headingIcon: (@Composable () -> Unit)? = null,
+    hintText: String,
+) {
+    val (selectedText, setSelectedText) = remember { mutableStateOf<String?>(null) }
+
+    ConstraintLayout(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        val (dropdownMenu, errorMessage, headingIconRef) = createRefs()
+
+        //헤딩 아이콘
+        headingIcon?.let {
+            Box(modifier = Modifier
+                .constrainAs(headingIconRef) {
+                    start.linkTo(parent.start)
+                    end.linkTo(dropdownMenu.start)
+                    centerVerticallyTo(dropdownMenu) // 드롭다운 메뉴와 수직 중앙 정렬
+                }
+            ) {
+                it()
+            }
+        }
+
+        //입력칸
+        Box(modifier = Modifier
+            .constrainAs(dropdownMenu) {
+                top.linkTo(parent.top)
+                if (headingIcon != null) { // headingIcon이 존재할 경우
+                    start.linkTo(headingIconRef.end, margin = 8.dp)
+                } else { // headingIcon이 존재하지 않을 경우
+                    start.linkTo(parent.start)
+                }
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            }
+        ) {
+            CategoryDropdownMenu(
+                hintText = hintText,
+                selectedText = selectedText,
+                onMenuSelected = setSelectedText
+            )
+        }
+
+        //에러 메시지
+        Box(modifier = Modifier
+            .constrainAs(errorMessage) {
+                bottom.linkTo(dropdownMenu.top, margin = 4.dp) //헤딩 아이콘 사이 간격
+                start.linkTo(dropdownMenu.start)
+            }
+        ) {
+            TextFieldErrorMessage(
+                labelText = hintText,
+                isError = selectedText.isNullOrBlank()
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryDropdownMenu(
     modifier: Modifier = Modifier,
     hintText: String,
-    headingIcon: (@Composable () -> Unit)? = null,
+    selectedText: String?,
+    onMenuSelected: (String?) -> Unit
 ) {
     val testOptions = arrayOf("남예준", "한노아", "채밤비", "도은호", "유하민")
 
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
-    val (selectedText, setSelectedText) = remember { mutableStateOf<String?>(null) }
+    //val (selectedText, setSelectedText) = remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = modifier
@@ -109,7 +177,7 @@ fun CategoryDropdownMenu(
                             )
                         },
                         onClick = {
-                            setSelectedText(item)
+                            onMenuSelected(item)
                             setIsExpanded(false)
                         },
                         modifier = Modifier
@@ -134,6 +202,22 @@ fun CategoryDropdownMenu(
 private fun CategoryDropdownMenuPreview() {
     CategoryDropdownMenu(
         hintText = "분류",
-        headingIcon = null
+        selectedText = "",
+        onMenuSelected = {}
+    )
+}
+
+@Preview
+@Composable
+private fun DropdownMenuPreview() {
+    DropdownMenu(
+        hintText = "분류",
+        headingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_filter_alt),
+                contentDescription = null,
+                tint = colorResource(id = R.color.red_0)
+            )
+        }
     )
 }
