@@ -28,7 +28,7 @@ import com.wiz.mybdcafe.R
 import com.wiz.mybdcafe.ui.theme.NanumNeo
 
 @Composable
-fun DropdownMenu(
+fun DropdownMenuWithErrorMessage(
     modifier: Modifier = Modifier,
     headingIcon: (@Composable () -> Unit)? = null,
     hintText: String,
@@ -101,7 +101,6 @@ fun CategoryDropdownMenu(
     val testOptions = arrayOf("남예준", "한노아", "채밤비", "도은호", "유하민")
 
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
-    //val (selectedText, setSelectedText) = remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = modifier
@@ -210,7 +209,7 @@ private fun CategoryDropdownMenuPreview() {
 @Preview
 @Composable
 private fun DropdownMenuPreview() {
-    DropdownMenu(
+    DropdownMenuWithErrorMessage(
         hintText = "분류",
         headingIcon = {
             Icon(

@@ -115,7 +115,7 @@ fun AddEvent() {
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     //분류 드롭다운 메뉴
-                    DropdownMenu(
+                    DropdownMenuWithErrorMessage(
                         hintText = "분류",
                         headingIcon = {
                             Icon(
