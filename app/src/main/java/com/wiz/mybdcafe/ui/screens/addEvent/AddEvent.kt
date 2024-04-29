@@ -4,11 +4,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
@@ -123,21 +126,41 @@ fun AddEvent() {
                         .height(36.dp)
                 )
 
+                //헤딩 아이콘 있는 항목들
                 Column(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     //분류 드롭다운 메뉴
-                    DropdownMenuWithErrorMessage(
-                        hintText = "분류",
-                        headingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_filter_alt),
-                                contentDescription = null,
-                                tint = colorResource(id = R.color.red_0)
-                            )
-                        }
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_filter_alt),
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.red_0)
+                        )
+
+
+                        //대분류
+                        DropdownMenuWithErrorMessage(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .weight(1f),
+                            hintText = "대분류",
+                        )
+
+                        //소분류
+                        DropdownMenuWithErrorMessage(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .weight(1f),
+                            hintText = "소분류",
+                        )
+                    }
 
                     //장소
                     TextField(
