@@ -5,10 +5,58 @@ import java.time.LocalDateTime
 import java.util.Date
 
 /*
-* 이벤트 등록 요청/응답
+* 이벤트 리퀘스트
 */
 
-data class EventAddRequest(
+sealed class EventRequest {
+    data class Create(
+        val eventName: String,
+        val mainCharacter: String? = null,
+        val genre: String? = null,
+        val startDate: Date? = null,
+        val endDate: Date? = null,
+        val location: Location.Basic,
+        val businessHours: List<BusinessHour.Basic> = listOf(),
+        val eventUrl: String? = null,
+        val memo: String? = null
+    )
+    data class Update(
+        val eventName: String,
+        val mainCharacter: String? = null,
+        val genre: String? = null,
+        val startDate: Date? = null,
+        val endDate: Date? = null,
+        val location: Location.ID,
+        val businessHours: List<BusinessHour.ID> = listOf(),
+        val eventUrl: String? = null,
+        val memo: String? = null
+    )
+}
+
+/*
+* 이벤트 리스폰스
+*/
+
+sealed class EventResponse {
+    data class Status(
+        val status: Int,
+        val timestamp: LocalDateTime,
+        val errorClass: String,
+
+        @SerializedName(value = "errMsg")
+        val errorMessage: String
+    )
+
+    data class Data(
+        val content: List<Event> = listOf(),
+        val count: Long,
+        val size: Int,
+        val page: Int
+    )
+}
+
+data class Event(
+    val eventId: Long,
     val eventName: String,
     val mainCharacter: String? = null,
     val genre: String? = null,
@@ -18,40 +66,6 @@ data class EventAddRequest(
     val businessHours: List<BusinessHour.Basic> = listOf(),
     val eventUrl: String? = null,
     val memo: String? = null
-)
-
-data class EventAddResponse(
-    val status: Int,
-    val timestamp: LocalDateTime,
-    val errorClass: String,
-
-    @SerializedName(value = "errMsg")
-    val errorMessage: String
-)
-
-/*
-* 이벤트 수정 요청/응답
-*/
-
-data class EventUpdateRequest(
-    val eventName: String,
-    val mainCharacter: String? = null,
-    val genre: String? = null,
-    val startDate: Date? = null,
-    val endDate: Date? = null,
-    val location: Location.ID,
-    val businessHours: List<BusinessHour.ID> = listOf(),
-    val eventUrl: String? = null,
-    val memo: String? = null
-)
-
-data class EventUpdateResponse(
-    val status: Int,
-    val timestamp: LocalDateTime,
-    val errorClass: String,
-
-    @SerializedName(value = "errMsg")
-    val errorMessage: String
 )
 
 sealed class Location {
