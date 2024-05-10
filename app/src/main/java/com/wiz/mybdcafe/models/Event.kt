@@ -1,4 +1,4 @@
-package com.wiz.mybdcafe.viewModel
+package com.wiz.mybdcafe.models
 
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
@@ -43,6 +43,15 @@ data class EventUpdateRequest(
     val businessHours: List<BusinessHour.ID> = listOf(),
     val eventUrl: String? = null,
     val memo: String? = null
+)
+
+data class EventUpdateResponse(
+    val status: Int,
+    val timestamp: LocalDateTime,
+    val errorClass: String,
+
+    @SerializedName(value = "errMsg")
+    val errorMessage: String
 )
 
 sealed class Location {
