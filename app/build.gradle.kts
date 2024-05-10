@@ -93,4 +93,8 @@ dependencies {
 
     //constraintLayout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    //retroFit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson")
 }
